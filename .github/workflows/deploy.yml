@@ -1,0 +1,86 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
+    - name: Build Frontend
+      run: |
+        npm install
+        npm run build
+
+    - name: Setup SSH key and deploy via rsync
+      env:
+        SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+        HOST: ${{ secrets.EC2_HOST }}
+        USER: ${{ secrets.EC2_USER }}
+      run: |
+        if [ -z "$HOST" ] || [ -z "$SSH_KEY" ] || [ -z "$USER" ]; then
+          echo "Deployment secrets are missing. Skipping deployment."
+          exit 0
+        fi
+        
+        # Sanitize HOST just in case user pasted "http://65.x.x.x"
+        CLEAN_HOST=$(echo "$HOST" | sed 's|^http[s]*://||')
+        
+        mkdir -p ~/.ssh
+        echo "$SSH_KEY" | tr -d '\r' > ~/.ssh/deploy_key
+        chmod 600 ~/.ssh/deploy_key
+        
+        # Disable strict host checking globally for this job since the IP might change
+        echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+        
+        # Rsync the entire repository (excluding git/node_modules/venv) and the built dist folder
+        rsync -avz --delete --exclude='.git' --exclude='node_modules' --exclude='backend/venv' --exclude='backend/__pycache__' --exclude='.env' --exclude='*.pem' -e "ssh -i ~/.ssh/deploy_key" ./ $USER@$CLEAN_HOST:/var/www/sewa_sahayak/
+
+    - name: Restart Backend & Nginx on EC2
+      env:
+        SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+        HOST: ${{ secrets.EC2_HOST }}
+        USER: ${{ secrets.EC2_USER }}
+      run: |
+        if [ -z "$HOST" ] || [ -z "$SSH_KEY" ] || [ -z "$USER" ]; then
+          echo "Deployment secrets are missing. Skipping backend restart."
+          exit 0
+        fi
+        
+        CLEAN_HOST=$(echo "$HOST" | sed 's|^http[s]*://||')
+        
+        # Disable strict host checking globally for this job since the IP might change
+        echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+        
+        ssh -i ~/.ssh/deploy_key $USER@$CLEAN_HOST << 'EOF'
+          cd /var/www/sewa_sahayak/backend
+          
+          # Install dependencies - only create venv if missing, never cache pip downloads
+          [ -d venv ] || python3 -m venv venv
+          source venv/bin/activate
+          pip install --no-cache-dir -r requirements.txt --quiet
+          pip install --no-cache-dir authlib itsdangerous starlette --quiet
+          
+          # Write a bash start script so PM2 doesn't treat uvicorn as a Node.js file
+          printf '#!/bin/bash\ncd /var/www/sewa_sahayak/backend\nsource venv/bin/activate\nexec uvicorn main:app --host 127.0.0.1 --port 8000\n' > /tmp/start_backend.sh
+          chmod +x /tmp/start_backend.sh
+
+          # Restart Python API (PM2) - always delete+start to avoid stale cached configs
+          pm2 delete sewa_backend 2>/dev/null || true
+          pm2 start /tmp/start_backend.sh --name sewa_backend
+          pm2 save
+          
+          # Restart Nginx
+          sudo systemctl restart nginx
+        EOF

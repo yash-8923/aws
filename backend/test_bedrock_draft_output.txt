@@ -1,0 +1,27 @@
+﻿--- test_bedrock_draft.py (POST /api/draft) ---
+Captured output from test_draft_endpoint_with_full_payload and test_draft_endpoint_minimal_payload_fallback.
+
+AWS Services (S3, Cognito, Rekognition, DynamoDB) configured successfully.
+=== Bedrock draft tests (/api/draft) ===
+[Amazon Bedrock] Generating dynamic AI draft for data: {'analysis': {'damage_type': 'Pothole', 'severity': 'High', 'suggested_description': 'Deep pothole near school crossing.'}, 'transcription': {'transcript': 'There is a pothole on Main Road that has been there for weeks.'}, 'jurisdiction': {'portal_name': 'Municipal Corporation', 'ward_district': 'Ward 12'}, 'location_context': 'Near City Primary School, Sector 4'}
+{
+  "applicantName": "Citizen Reporter",
+  "damageType": "Pothole",
+  "severity": "High",
+  "jurisdiction": "Municipal Corporation",
+  "ward": "Sector 4",
+  "description": "To the concerned authority,\n\nI am writing to bring to your immediate attention a severe pothole issue that poses significant safety risks to both students and residents in Sector 4. The location of this hazardous pit is on Main Road, near the City Primary School crossing. According to an AI analysis, this deep pothole has been a persistent problem for weeks now. The road condition is deteriorating, and the presence of a pothole near a school crossing is particularly concerning given the high pedestrian traffic of children and staff.\n\nAs per a voice report, the pothole has not been addressed despite its prolonged existence, which is causing distress and potential harm. Requested to take immediate action to fill and repair this dangerous pothole to prevent any accidents or injuries.\n\nThank you for your prompt attention to this matter.\n\nSincerely,\nCitizen Reporter",
+  "phoneNumber": "+91-9876543210"
+}
+
+[Amazon Bedrock] Generating dynamic AI draft for data: {}
+{
+  "applicantName": "Citizen Reporter",
+  "damageType": "Civic Issue",
+  "severity": "Medium",
+  "jurisdiction": "Local Authority",
+  "ward": "Not provided",
+  "description": "To the concerned authority,\n\nI am writing to bring to your immediate attention a civic issue that has been affecting our locality. Despite multiple requests, the matter has not been resolved to our satisfaction. The issue pertains to the improper waste disposal and sanitation management in our neighborhood, which has led to unhygienic conditions and posed a significant health risk to residents.\n\nThe collected data suggests a medium severity level due to the widespread impact and the potential health hazards involved. While we understand the challenges, it is imperative that the Local Authority takes prompt and effective action to rectify the situation.\n\nWe kindly request the concerned officials to deploy sanitation workers and provide adequate waste disposal mechanisms to ensure the cleanliness and safety of our community.\n\nThank you for your attention to this matter, and we look forward to a prompt and positive resolution.\n\nSincerely,\nCitizen Reporter",
+  "phoneNumber": "+91-9876543210"
+}
+=== All assertions passed ===

@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+python-multipart
+boto3
+pydantic
+python-dotenv
+authlib
+httpx
+itsdangerous
+Pillow
+nova-act
+playwright
+opencv-python-headless
+numpy

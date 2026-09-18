@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head><title>Redirecting...</title></head>
+<body>
+<script>
+  // Signal to the React app that OAuth login just completed
+  localStorage.setItem('auth_just_completed', '1');
+  // Hard-navigate to root - bypasses service worker cache entirely
+  window.location.replace('/');
+</script>
+<p>Logging you in, please wait...</p>
+</body>
+</html>

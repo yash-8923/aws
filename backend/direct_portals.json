@@ -1,0 +1,25 @@
+{
+  "CENTRAL": {
+    "NHAI": "https://complaint.nhai.org/",
+    "CPGRAMS": "https://pgportal.gov.in/"
+  },
+  "MUNICIPAL_CORP": {
+    "MUMBAI_BMC": "https://portal.mcgm.gov.in/",
+    "BENGALURU_BBMP": "https://ipgrs.karnataka.gov.in/",
+    "CHENNAI_GCC": "https://erp.chennaicorporation.gov.in/pgr/",
+    "AHMEDABAD_AMC": "https://www.amccrs.com/AMCPortal/View/ComplaintRegistration.aspx",
+    "LUCKNOW_LMC": "https://jansunwai.up.nic.in/",
+    "BHOPAL_BMC": "https://cmhelpline.mp.gov.in/",
+    "RAJKOT_RMC": "https://www.rmc.gov.in/",
+    "SRINAGAR_SMC": "https://smcsrinagar.in/",
+    "CHANDIGARH_MC": "https://mcchandigarh.gov.in/",
+    "JABALPUR_JMC": "https://mayorhelplinejmc.com/",
+    "HOWRAH_HMC": "https://www.myhmc.in/"
+  },
+  "STATE_GOVERNMENT": {
+    "MIZORAM_STATE": "https://mizoram.gov.in/grievance",
+    "RAJASTHAN_SAMPARK": "https://sampark.rajasthan.gov.in/",
+    "SIKKIM_STATE": "https://sikkim.gov.in/",
+    "UTTARAKHAND_CM_HELPLINE": "https://cmhelpline.uk.gov.in/"
+  }
+}
