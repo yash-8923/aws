@@ -48,10 +48,10 @@ app.add_middleware(
 
 # Session Middleware for Authlib OAuth
 app.add_middleware(
-    SessionMiddleware, 
+    SessionMiddleware,
     secret_key=os.getenv("SECRET_KEY") or os.urandom(24).hex(),
     https_only=True,
-    same_site='lax'
+    same_site='none'
 )
 
 oauth = OAuth()
